@@ -1,3 +1,5 @@
+### Jupyter notebook
+
 ```python
 !pip show torch
 ```
@@ -38,9 +40,8 @@ prefix = "rucha/sagemaker/DEMO-pytorch-bert"
 role = sagemaker.get_execution_role()
 ```
 
-
+### Download data
 ```python
-# Download data
 
 if not os.path.exists("./cola_public_1.1.zip"):
     !curl -o ./cola_public_1.1.zip https://nyu-mll.github.io/CoLA/cola_public_1.1.zip
@@ -120,10 +121,10 @@ inputs_test = sagemaker_session.upload_data("./cola_public/test.csv", bucket=buc
 ```
 
 
-
+### Train
 
 ```python
-# Train on Amazon SageMaker
+
 from sagemaker.pytorch import PyTorch
 
 estimator = PyTorch(
@@ -312,9 +313,8 @@ estimator.fit({"training": inputs_train, "testing": inputs_test})
     ===== Job Complete =====
 
 
-
+### Host on local instance, without accelerator
 ```python
-# Host
 
 predictor = estimator.deploy(initial_instance_count=1, instance_type='local')#, accelerator_type='local_sagemaker_notebook')
 
@@ -858,10 +858,11 @@ tar xvzf model/model.tar.gz --directory ./model
     config.json
 
 
+### Trace Model
 
 ```python
 # The following code converts our model into the TorchScript format:
-!pip install transformers==2.11.0
+!pip install transformers
 import subprocess
 import torch
 from transformers import BertForSequenceClassification
@@ -880,51 +881,6 @@ torch.jit.save(traced_model, "traced_bert.pt")
 
 subprocess.call(["tar", "-czvf", "traced_bert.tar.gz", "traced_bert.pt"])
 ```
-
-    Collecting transformers==2.11.0
-      Downloading transformers-2.11.0-py3-none-any.whl (674 kB)
-    [K     |████████████████████████████████| 674 kB 19.7 MB/s eta 0:00:01
-    [?25hCollecting tokenizers==0.7.0
-      Downloading tokenizers-0.7.0-cp36-cp36m-manylinux1_x86_64.whl (3.8 MB)
-    [K     |████████████████████████████████| 3.8 MB 31.4 MB/s eta 0:00:01
-    [?25hCollecting sentencepiece
-      Downloading sentencepiece-0.1.94-cp36-cp36m-manylinux2014_x86_64.whl (1.1 MB)
-    [K     |████████████████████████████████| 1.1 MB 81.7 MB/s eta 0:00:01
-    [?25hRequirement already satisfied: sacremoses in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (0.0.43)
-    Requirement already satisfied: tqdm>=4.27 in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (4.42.1)
-    Requirement already satisfied: regex!=2019.12.17 in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (2020.11.13)
-    Requirement already satisfied: requests in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (2.22.0)
-    Requirement already satisfied: dataclasses; python_version < "3.7" in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (0.7)
-    Requirement already satisfied: packaging in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (20.1)
-    Requirement already satisfied: filelock in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (3.0.12)
-    Requirement already satisfied: numpy in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from transformers==2.11.0) (1.18.1)
-    Requirement already satisfied: six in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from sacremoses->transformers==2.11.0) (1.14.0)
-    Requirement already satisfied: joblib in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from sacremoses->transformers==2.11.0) (0.14.1)
-    Requirement already satisfied: click in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from sacremoses->transformers==2.11.0) (7.0)
-    Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from requests->transformers==2.11.0) (1.25.10)
-    Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from requests->transformers==2.11.0) (3.0.4)
-    Requirement already satisfied: idna<2.9,>=2.5 in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from requests->transformers==2.11.0) (2.8)
-    Requirement already satisfied: certifi>=2017.4.17 in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from requests->transformers==2.11.0) (2020.6.20)
-    Requirement already satisfied: pyparsing>=2.0.2 in /home/ec2-user/anaconda3/envs/pytorch_p36/lib/python3.6/site-packages (from packaging->transformers==2.11.0) (2.4.6)
-    Installing collected packages: tokenizers, sentencepiece, transformers
-      Attempting uninstall: tokenizers
-        Found existing installation: tokenizers 0.9.4
-        Uninstalling tokenizers-0.9.4:
-          Successfully uninstalled tokenizers-0.9.4
-      Attempting uninstall: transformers
-        Found existing installation: transformers 4.0.1
-        Uninstalling transformers-4.0.1:
-          Successfully uninstalled transformers-4.0.1
-    Successfully installed sentencepiece-0.1.94 tokenizers-0.7.0 transformers-2.11.0
-    [33mWARNING: You are using pip version 20.0.2; however, version 20.3.3 is available.
-    You should consider upgrading via the '/home/ec2-user/anaconda3/envs/pytorch_p36/bin/python -m pip install --upgrade pip' command.[0m
-    [36malgo-1-q1fo1_1  |[0m 2020-12-17 09:51:10,414 [WARN ] pool-2-thread-2 com.amazonaws.ml.mms.metrics.MetricCollector - worker pid is not available yet.
-
-
-
-
-
-    0
 
 
 
@@ -1029,7 +985,7 @@ sagemaker_session
     <sagemaker.local.local_session.LocalSession at 0x7f4e2e77c128>
 
 
-
+### Deploy on local instance with accelerator
 
 ```python
 # Next we upload TorchScript model to S3 and deploy using Elastic Inference. 
